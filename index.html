@@ -4,8 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>QuickMath 2.0</title>
+<title>QuickMath 2.1</title>
 
 <style>
 * {
@@ -14,88 +13,127 @@
 
 body {
   margin: 0;
-  padding: 25px 15px;
+  padding: 20px;
+  min-height: 100vh;
   font-family: Arial, sans-serif;
-  background: #eef2ff;
+  background: #eef4ff;
   color: #172554;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .container {
-  max-width: 430px;
-  margin: 30px auto;
-  padding: 25px;
   background: white;
+  width: 100%;
+  max-width: 440px;
+  padding: 25px;
   border-radius: 20px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  text-align: center;
 }
 
 h1 {
-  color: #2563eb;
   margin-bottom: 5px;
+  color: #2563eb;
 }
 
 .subtitle {
   color: #64748b;
-  margin-bottom: 25px;
+  margin-top: 0;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 22px 0;
+}
+
+.stat {
+  background: #eff6ff;
+  padding: 12px 5px;
+  border-radius: 12px;
+}
+
+.stat strong {
+  display: block;
+  font-size: 22px;
+  color: #2563eb;
+}
+
+.stat span {
+  font-size: 12px;
+  color: #64748b;
 }
 
 label {
   display: block;
   text-align: left;
+  margin-bottom: 7px;
   font-weight: bold;
-  margin-bottom: 8px;
+}
+
+select, input, button {
+  width: 100%;
+  padding: 13px;
+  border-radius: 10px;
+  font-size: 16px;
 }
 
 select, input {
-  width: 100%;
-  padding: 13px;
-  margin-bottom: 18px;
   border: 1px solid #cbd5e1;
-  border-radius: 10px;
-  font-size: 16px;
+  margin-bottom: 16px;
+  background: white;
 }
 
-.question-box {
-  background: #eff6ff;
-  padding: 25px 10px;
-  border-radius: 15px;
-  margin-bottom: 18px;
-}
-
-#question {
-  font-size: 32px;
-  margin: 0;
-  color: #1d4ed8;
+.question {
+  font-size: 34px;
+  font-weight: bold;
+  margin: 25px 0;
+  color: #1e40af;
 }
 
 button {
-  width: 100%;
-  padding: 14px;
-  margin-bottom: 10px;
   border: none;
-  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.primary {
   background: #2563eb;
   color: white;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
 }
 
-.next {
-  background: #0f172a;
+.secondary {
+  background: #e2e8f0;
+  color: #1e293b;
 }
 
-#feedback {
-  font-weight: bold;
-  min-height: 24px;
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-.score-box {
-  background: #f1f5f9;
-  padding: 15px;
-  border-radius: 12px;
-  font-size: 18px;
+.feedback {
+  min-height: 28px;
+  margin: 15px 0;
   font-weight: bold;
+}
+
+.correct {
+  color: #15803d;
+}
+
+.wrong {
+  color: #dc2626;
+}
+
+.footer {
+  margin-top: 22px;
+  color: #94a3b8;
+  font-size: 12px;
 }
 </style>
 </head>
@@ -103,129 +141,190 @@ button {
 <body>
 
 <div class="container">
+  <h1>QuickMath 2.1</h1>
+  <p class="subtitle">Think fast. Learn faster.</p>
 
-  <h1>QuickMath 2.0 🧠</h1>
+  <div class="stats">
+    <div class="stat">
+      <strong id="score">0</strong>
+      <span>Score</span>
+    </div>
+    <div class="stat">
+      <strong id="streak">0</strong>
+      <span>Streak</span>
+    </div>
+    <div class="stat">
+      <strong id="accuracy">0%</strong>
+      <span>Accuracy</span>
+    </div>
+  </div>
 
-  <p class="subtitle">
-    Train your brain. Challenge yourself.
-  </p>
-
-  <label for="difficulty">
-    Select difficulty
-  </label>
-
+  <label for="difficulty">Choose difficulty</label>
   <select id="difficulty">
-    <option value="easy">Easy</option>
-    <option value="medium">Medium</option>
-    <option value="hard">Hard</option>
+    <option value="10">Easy (1–10)</option>
+    <option value="50">Medium (1–50)</option>
+    <option value="100">Hard (1–100)</option>
   </select>
 
-  <div class="question-box">
-    <h2 id="question">Loading...</h2>
-  </div>
+  <label for="operation">Choose operation</label>
+  <select id="operation">
+    <option value="random">Mixed operations</option>
+    <option value="+">Addition (+)</option>
+    <option value="-">Subtraction (−)</option>
+    <option value="*">Multiplication (×)</option>
+    <option value="/">Division (÷)</option>
+  </select>
+
+  <div class="question" id="question">5 + 3 = ?</div>
 
   <input
     type="number"
     id="answer"
     placeholder="Enter your answer"
+    inputmode="numeric"
   >
 
-  <button onclick="checkAnswer()">
-    Submit Answer
-  </button>
+  <button class="primary" id="checkBtn">Check Answer</button>
+  <div class="feedback" id="feedback" aria-live="polite"></div>
 
-  <button class="next" onclick="newQuestion()">
-    Next Question
-  </button>
+  <button class="secondary" id="nextBtn">Next Question</button>
 
-  <p id="feedback"></p>
-
-  <div class="score-box">
-    Score: <span id="score">0</span>
-  </div>
-
+  <p class="footer">QuickMath 2.1 | Built for curious minds</p>
 </div>
 
 <script>
-
-let a, b;
 let score = 0;
-let operation = "+";
+let streak = 0;
+let attempted = 0;
+let correct = 0;
+let correctAnswer = 0;
 let answered = false;
 
-function newQuestion() {
+const questionEl = document.getElementById("question");
+const answerEl = document.getElementById("answer");
+const feedbackEl = document.getElementById("feedback");
+const scoreEl = document.getElementById("score");
+const streakEl = document.getElementById("streak");
+const accuracyEl = document.getElementById("accuracy");
+const difficultyEl = document.getElementById("difficulty");
+const operationEl = document.getElementById("operation");
+const checkBtn = document.getElementById("checkBtn");
 
-  const level =
-    document.getElementById("difficulty").value;
+function randomNumber(max) {
+  return Math.floor(Math.random() * max) + 1;
+}
 
-  const max =
-    level === "easy" ? 10 :
-    level === "medium" ? 50 : 100;
+function generateQuestion() {
+  const max = Number(difficultyEl.value);
+  let operation = operationEl.value;
 
-  a = Math.floor(Math.random() * max) + 1;
-  b = Math.floor(Math.random() * max) + 1;
-
-  operation =
-    Math.random() < 0.5 ? "+" : "-";
-
-  if (operation === "-" && b > a) {
-    [a, b] = [b, a];
+  if (operation === "random") {
+    const operations = ["+", "-", "*", "/"];
+    operation = operations[Math.floor(Math.random() * 4)];
   }
 
-  document.getElementById("question").textContent =
-    `${a} ${operation} ${b} = ?`;
+  let a, b;
 
-  document.getElementById("answer").value = "";
+  if (operation === "/") {
+    b = randomNumber(max);
+    const quotient = randomNumber(max);
+    a = b * quotient;
+    correctAnswer = quotient;
+  } else {
+    a = randomNumber(max);
+    b = randomNumber(max);
 
-  document.getElementById("feedback").textContent = "";
+    if (operation === "-") {
+      if (b > a) [a, b] = [b, a];
+      correctAnswer = a - b;
+    }
 
+    if (operation === "+") correctAnswer = a + b;
+    if (operation === "*") correctAnswer = a * b;
+  }
+
+  const symbols = {
+    "+": "+",
+    "-": "−",
+    "*": "×",
+    "/": "÷"
+  };
+
+  questionEl.textContent =
+    `${a} ${symbols[operation]} ${b} = ?`;
+
+  answerEl.value = "";
+  feedbackEl.textContent = "";
+  feedbackEl.className = "feedback";
   answered = false;
+  checkBtn.disabled = false;
+  answerEl.disabled = false;
+  answerEl.focus();
+}
+
+function updateStats() {
+  scoreEl.textContent = score;
+  streakEl.textContent = streak;
+
+  const percentage = attempted === 0
+    ? 0
+    : Math.round((correct / attempted) * 100);
+
+  accuracyEl.textContent = percentage + "%";
 }
 
 function checkAnswer() {
-
   if (answered) return;
 
-  const input =
-    document.getElementById("answer").value;
+  const userAnswer = answerEl.value.trim();
 
-  const feedback =
-    document.getElementById("feedback");
-
-  if (input.trim() === "") {
-    feedback.textContent =
-      "Please enter an answer first!";
+  if (userAnswer === "") {
+    feedbackEl.textContent = "Please enter an answer first.";
+    feedbackEl.className = "feedback wrong";
     return;
   }
 
-  const correctAnswer =
-    operation === "+" ? a + b : a - b;
+  attempted++;
+  answered = true;
+  checkBtn.disabled = true;
+  answerEl.disabled = true;
 
-  if (Number(input) === correctAnswer) {
-
+  if (Number(userAnswer) === correctAnswer) {
     score++;
+    correct++;
+    streak++;
 
-    feedback.textContent =
-      "Correct! Excellent work 🎉";
-
+    feedbackEl.textContent = "Correct! Excellent work!";
+    feedbackEl.className = "feedback correct";
   } else {
+    streak = 0;
 
-    feedback.textContent =
-      `Incorrect! The answer is ${correctAnswer}.`;
+    feedbackEl.textContent =
+      `Not quite! The correct answer is ${correctAnswer}.`;
 
+    feedbackEl.className = "feedback wrong";
   }
 
-  document.getElementById("score").textContent =
-    score;
-
-  answered = true;
+  updateStats();
 }
 
-document.getElementById("difficulty")
-  .addEventListener("change", newQuestion);
+checkBtn.addEventListener("click", checkAnswer);
 
-newQuestion();
+document.getElementById("nextBtn").addEventListener(
+  "click",
+  generateQuestion
+);
 
+answerEl.addEventListener("keydown", function(event) {
+  if (event.key === "Enter") {
+    checkAnswer();
+  }
+});
+
+difficultyEl.addEventListener("change", generateQuestion);
+operationEl.addEventListener("change", generateQuestion);
+
+generateQuestion();
 </script>
 
 </body>
