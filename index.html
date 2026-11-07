@@ -4,48 +4,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QuickMath 2.1</title>
+<title>QuickMath 2.2</title>
 
 <style>
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
   padding: 20px;
   min-height: 100vh;
-  font-family: Arial, sans-serif;
-  background: #eef4ff;
-  color: #172554;
   display: flex;
   justify-content: center;
   align-items: center;
+  background: #eef4ff;
+  color: #172554;
+  font-family: Arial, sans-serif;
 }
 
 .container {
-  background: white;
   width: 100%;
-  max-width: 440px;
+  max-width: 460px;
   padding: 25px;
+  background: white;
   border-radius: 20px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 30px rgba(0,0,0,.08);
   text-align: center;
 }
 
-h1 {
-  margin-bottom: 5px;
-  color: #2563eb;
-}
-
-.subtitle {
-  color: #64748b;
-  margin-top: 0;
-}
+h1 { color: #2563eb; margin-bottom: 5px; }
+.subtitle { color: #64748b; margin-top: 0; }
 
 .stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3,1fr);
   gap: 8px;
   margin: 22px 0;
 }
@@ -62,15 +53,12 @@ h1 {
   color: #2563eb;
 }
 
-.stat span {
-  font-size: 12px;
-  color: #64748b;
-}
+.stat span { font-size: 12px; color: #64748b; }
 
 label {
   display: block;
   text-align: left;
-  margin-bottom: 7px;
+  margin: 12px 0 7px;
   font-weight: bold;
 }
 
@@ -83,51 +71,64 @@ select, input, button {
 
 select, input {
   border: 1px solid #cbd5e1;
-  margin-bottom: 16px;
   background: white;
 }
 
 .question {
-  font-size: 34px;
+  font-size: 36px;
   font-weight: bold;
-  margin: 25px 0;
   color: #1e40af;
+  margin: 25px 0;
 }
 
 button {
   border: none;
   cursor: pointer;
   font-weight: bold;
-  margin-top: 5px;
+  margin-top: 10px;
 }
 
-.primary {
-  background: #2563eb;
-  color: white;
-}
+.primary { background: #2563eb; color: white; }
+.secondary { background: #e2e8f0; color: #1e293b; }
+.challenge { background: #0f172a; color: white; }
 
-.secondary {
-  background: #e2e8f0;
-  color: #1e293b;
-}
-
-button:disabled {
-  opacity: 0.5;
+button:disabled, select:disabled {
+  opacity: .5;
   cursor: not-allowed;
+}
+
+.timer {
+  font-size: 25px;
+  font-weight: bold;
+  color: #dc2626;
+  margin: 15px 0;
 }
 
 .feedback {
   min-height: 28px;
-  margin: 15px 0;
+  margin-top: 15px;
   font-weight: bold;
 }
 
-.correct {
-  color: #15803d;
+.correct { color: #15803d; }
+.wrong { color: #dc2626; }
+
+.explanation {
+  background: #eff6ff;
+  border-left: 4px solid #2563eb;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: left;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-top: 12px;
+  display: none;
 }
 
-.wrong {
-  color: #dc2626;
+.best {
+  margin: 15px 0;
+  font-weight: bold;
+  color: #475569;
 }
 
 .footer {
@@ -141,55 +142,72 @@ button:disabled {
 <body>
 
 <div class="container">
-  <h1>QuickMath 2.1</h1>
-  <p class="subtitle">Think fast. Learn faster.</p>
 
-  <div class="stats">
-    <div class="stat">
-      <strong id="score">0</strong>
-      <span>Score</span>
-    </div>
-    <div class="stat">
-      <strong id="streak">0</strong>
-      <span>Streak</span>
-    </div>
-    <div class="stat">
-      <strong id="accuracy">0%</strong>
-      <span>Accuracy</span>
-    </div>
+<h1>QuickMath 2.2 🧮</h1>
+<p class="subtitle">Think fast. Learn faster.</p>
+
+<div class="stats">
+  <div class="stat">
+    <strong id="score">0</strong>
+    <span>Score</span>
   </div>
+  <div class="stat">
+    <strong id="streak">0</strong>
+    <span>Streak</span>
+  </div>
+  <div class="stat">
+    <strong id="accuracy">0%</strong>
+    <span>Accuracy</span>
+  </div>
+</div>
 
-  <label for="difficulty">Choose difficulty</label>
-  <select id="difficulty">
-    <option value="10">Easy (1–10)</option>
-    <option value="50">Medium (1–50)</option>
-    <option value="100">Hard (1–100)</option>
-  </select>
+<div class="best">
+  🏆 Personal Best: <span id="best">0</span>
+</div>
 
-  <label for="operation">Choose operation</label>
-  <select id="operation">
-    <option value="random">Mixed operations</option>
-    <option value="+">Addition (+)</option>
-    <option value="-">Subtraction (−)</option>
-    <option value="*">Multiplication (×)</option>
-    <option value="/">Division (÷)</option>
-  </select>
+<div class="timer" id="timer">Practice Mode</div>
 
-  <div class="question" id="question">5 + 3 = ?</div>
+<label for="difficulty">Difficulty</label>
+<select id="difficulty">
+  <option value="10">Easy (1–10)</option>
+  <option value="50">Medium (1–50)</option>
+  <option value="100">Hard (1–100)</option>
+</select>
 
-  <input
-    type="number"
-    id="answer"
-    placeholder="Enter your answer"
-    inputmode="numeric"
-  >
+<label for="operation">Operation</label>
+<select id="operation">
+  <option value="random">Mixed Operations</option>
+  <option value="+">Addition (+)</option>
+  <option value="-">Subtraction (−)</option>
+  <option value="*">Multiplication (×)</option>
+  <option value="/">Division (÷)</option>
+</select>
 
-  <button class="primary" id="checkBtn">Check Answer</button>
-  <div class="feedback" id="feedback" aria-live="polite"></div>
+<div class="question" id="question">5 + 3 = ?</div>
 
-  <button class="secondary" id="nextBtn">Next Question</button>
+<input
+  type="number"
+  id="answer"
+  placeholder="Enter your answer"
+  inputmode="numeric"
+>
 
-  <p class="footer">QuickMath 2.1 | Built for curious minds</p>
+<button class="primary" id="checkBtn">Check Answer</button>
+
+<div class="feedback" id="feedback" aria-live="polite"></div>
+
+<div class="explanation" id="explanation"></div>
+
+<button class="secondary" id="nextBtn">Next Question</button>
+
+<button class="challenge" id="startBtn">
+  Start 60-Second Challenge
+</button>
+
+<p class="footer">
+  QuickMath 2.2 | Learn • Practise • Improve
+</p>
+
 </div>
 
 <script>
@@ -200,15 +218,31 @@ let correct = 0;
 let correctAnswer = 0;
 let answered = false;
 
-const questionEl = document.getElementById("question");
-const answerEl = document.getElementById("answer");
-const feedbackEl = document.getElementById("feedback");
-const scoreEl = document.getElementById("score");
-const streakEl = document.getElementById("streak");
-const accuracyEl = document.getElementById("accuracy");
-const difficultyEl = document.getElementById("difficulty");
-const operationEl = document.getElementById("operation");
-const checkBtn = document.getElementById("checkBtn");
+let challengeActive = false;
+let timeLeft = 60;
+let timerId = null;
+let bestScore = Number(localStorage.getItem("qmBest")) || 0;
+
+let totalAttempts = Number(localStorage.getItem("qmAttempts")) || 0;
+let totalCorrect = Number(localStorage.getItem("qmCorrect")) || 0;
+
+const $ = id => document.getElementById(id);
+
+const questionEl = $("question");
+const answerEl = $("answer");
+const feedbackEl = $("feedback");
+const explanationEl = $("explanation");
+const checkBtn = $("checkBtn");
+const nextBtn = $("nextBtn");
+const startBtn = $("startBtn");
+const difficultyEl = $("difficulty");
+const operationEl = $("operation");
+
+let currentA = 0;
+let currentB = 0;
+let currentOperation = "+";
+
+$("best").textContent = bestScore;
 
 function randomNumber(max) {
   return Math.floor(Math.random() * max) + 1;
@@ -216,16 +250,16 @@ function randomNumber(max) {
 
 function generateQuestion() {
   const max = Number(difficultyEl.value);
-  let operation = operationEl.value;
+  let op = operationEl.value;
 
-  if (operation === "random") {
+  if (op === "random") {
     const operations = ["+", "-", "*", "/"];
-    operation = operations[Math.floor(Math.random() * 4)];
+    op = operations[Math.floor(Math.random() * 4)];
   }
 
   let a, b;
 
-  if (operation === "/") {
+  if (op === "/") {
     b = randomNumber(max);
     const quotient = randomNumber(max);
     a = b * quotient;
@@ -234,14 +268,18 @@ function generateQuestion() {
     a = randomNumber(max);
     b = randomNumber(max);
 
-    if (operation === "-") {
+    if (op === "-") {
       if (b > a) [a, b] = [b, a];
       correctAnswer = a - b;
     }
 
-    if (operation === "+") correctAnswer = a + b;
-    if (operation === "*") correctAnswer = a * b;
+    if (op === "+") correctAnswer = a + b;
+    if (op === "*") correctAnswer = a * b;
   }
+
+  currentA = a;
+  currentB = b;
+  currentOperation = op;
 
   const symbols = {
     "+": "+",
@@ -251,50 +289,96 @@ function generateQuestion() {
   };
 
   questionEl.textContent =
-    `${a} ${symbols[operation]} ${b} = ?`;
+    `${a} ${symbols[op]} ${b} = ?`;
 
   answerEl.value = "";
+  answerEl.disabled = false;
   feedbackEl.textContent = "";
   feedbackEl.className = "feedback";
+  explanationEl.style.display = "none";
+
   answered = false;
   checkBtn.disabled = false;
-  answerEl.disabled = false;
+  nextBtn.disabled = false;
   answerEl.focus();
 }
 
 function updateStats() {
-  scoreEl.textContent = score;
-  streakEl.textContent = streak;
+  $("score").textContent = score;
+  $("streak").textContent = streak;
 
-  const percentage = attempted === 0
+  const accuracy = attempted === 0
     ? 0
-    : Math.round((correct / attempted) * 100);
+    : Math.round(correct / attempted * 100);
 
-  accuracyEl.textContent = percentage + "%";
+  $("accuracy").textContent = accuracy + "%";
+}
+
+function saveProgress() {
+  localStorage.setItem("qmAttempts", totalAttempts);
+  localStorage.setItem("qmCorrect", totalCorrect);
+}
+
+function showExplanation() {
+  let explanation = "";
+
+  if (currentOperation === "+") {
+    explanation =
+      `${currentA} + ${currentB} means combining both numbers. ` +
+      `${currentA} + ${currentB} = ${correctAnswer}.`;
+  }
+
+  if (currentOperation === "-") {
+    explanation =
+      `Subtract ${currentB} from ${currentA}. ` +
+      `${currentA} - ${currentB} = ${correctAnswer}.`;
+  }
+
+  if (currentOperation === "*") {
+    explanation =
+      `${currentA} × ${currentB} means adding ${currentA}, ` +
+      `${currentB} times. The result is ${correctAnswer}.`;
+  }
+
+  if (currentOperation === "/") {
+    explanation =
+      `${currentA} ÷ ${currentB} asks how many times ${currentB} ` +
+      `fits into ${currentA}. The answer is ${correctAnswer}.`;
+  }
+
+  explanationEl.textContent = "💡 Learning tip: " + explanation;
+  explanationEl.style.display = "block";
 }
 
 function checkAnswer() {
-  if (answered) return;
+  if (answered || (challengeActive && timeLeft <= 0)) return;
 
-  const userAnswer = answerEl.value.trim();
+  const value = answerEl.value.trim();
 
-  if (userAnswer === "") {
+  if (value === "") {
     feedbackEl.textContent = "Please enter an answer first.";
     feedbackEl.className = "feedback wrong";
     return;
   }
 
-  attempted++;
+  const userAnswer = Number(value);
+
+  if (!Number.isFinite(userAnswer)) return;
+
   answered = true;
+  attempted++;
+  totalAttempts++;
+
   checkBtn.disabled = true;
   answerEl.disabled = true;
 
-  if (Number(userAnswer) === correctAnswer) {
+  if (userAnswer === correctAnswer) {
     score++;
     correct++;
+    totalCorrect++;
     streak++;
 
-    feedbackEl.textContent = "Correct! Excellent work!";
+    feedbackEl.textContent = "Correct! Excellent work! 🎉";
     feedbackEl.className = "feedback correct";
   } else {
     streak = 0;
@@ -305,25 +389,98 @@ function checkAnswer() {
     feedbackEl.className = "feedback wrong";
   }
 
+  saveProgress();
   updateStats();
+  showExplanation();
+}
+
+function finishChallenge() {
+  clearInterval(timerId);
+  timerId = null;
+
+  challengeActive = false;
+  timeLeft = 0;
+
+  $("timer").textContent = "Challenge finished!";
+
+  answerEl.disabled = true;
+  checkBtn.disabled = true;
+  nextBtn.disabled = true;
+
+  difficultyEl.disabled = false;
+  operationEl.disabled = false;
+
+  if (score > bestScore) {
+    bestScore = score;
+    localStorage.setItem("qmBest", bestScore);
+    $("best").textContent = bestScore;
+    feedbackEl.textContent =
+      `🏆 New personal best! You scored ${score}.`;
+  } else {
+    feedbackEl.textContent =
+      `Time's up! Your challenge score: ${score}.`;
+  }
+
+  feedbackEl.className = "feedback correct";
+  explanationEl.style.display = "none";
+
+  startBtn.textContent = "Try Again";
+}
+
+function startChallenge() {
+  clearInterval(timerId);
+
+  score = 0;
+  streak = 0;
+  attempted = 0;
+  correct = 0;
+  timeLeft = 60;
+  challengeActive = true;
+
+  difficultyEl.disabled = true;
+  operationEl.disabled = true;
+
+  answerEl.disabled = false;
+  checkBtn.disabled = false;
+  nextBtn.disabled = false;
+
+  startBtn.textContent = "Restart Challenge";
+
+  updateStats();
+  $("timer").textContent = "Time: 60s";
+
+  generateQuestion();
+
+  timerId = setInterval(() => {
+    timeLeft--;
+    $("timer").textContent = `Time: ${timeLeft}s`;
+
+    if (timeLeft <= 0) {
+      finishChallenge();
+    }
+  }, 1000);
 }
 
 checkBtn.addEventListener("click", checkAnswer);
 
-document.getElementById("nextBtn").addEventListener(
-  "click",
-  generateQuestion
-);
-
-answerEl.addEventListener("keydown", function(event) {
-  if (event.key === "Enter") {
-    checkAnswer();
+nextBtn.addEventListener("click", () => {
+  if (challengeActive && timeLeft > 0) {
+    generateQuestion();
+  } else if (!challengeActive) {
+    generateQuestion();
   }
+});
+
+startBtn.addEventListener("click", startChallenge);
+
+answerEl.addEventListener("keydown", event => {
+  if (event.key === "Enter") checkAnswer();
 });
 
 difficultyEl.addEventListener("change", generateQuestion);
 operationEl.addEventListener("change", generateQuestion);
 
+updateStats();
 generateQuestion();
 </script>
 
