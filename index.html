@@ -2,49 +2,231 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QuickMath 2.0</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>QuickMath 2.0</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 25px 15px;
+  font-family: Arial, sans-serif;
+  background: #eef2ff;
+  color: #172554;
+}
+
+.container {
+  max-width: 430px;
+  margin: 30px auto;
+  padding: 25px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+h1 {
+  color: #2563eb;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  color: #64748b;
+  margin-bottom: 25px;
+}
+
+label {
+  display: block;
+  text-align: left;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+select, input {
+  width: 100%;
+  padding: 13px;
+  margin-bottom: 18px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+.question-box {
+  background: #eff6ff;
+  padding: 25px 10px;
+  border-radius: 15px;
+  margin-bottom: 18px;
+}
+
+#question {
+  font-size: 32px;
+  margin: 0;
+  color: #1d4ed8;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.next {
+  background: #0f172a;
+}
+
+#feedback {
+  font-weight: bold;
+  min-height: 24px;
+}
+
+.score-box {
+  background: #f1f5f9;
+  padding: 15px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+}
+</style>
 </head>
 
 <body>
 
+<div class="container">
+
   <h1>QuickMath 2.0 🧠</h1>
 
-  <p>Welcome to your mathematics challenge!</p>
+  <p class="subtitle">
+    Train your brain. Challenge yourself.
+  </p>
 
-  <h2 id="question">5 + 3 = ?</h2>
+  <label for="difficulty">
+    Select difficulty
+  </label>
 
-  <input type="number" id="answer"
-         placeholder="Enter your answer">
+  <select id="difficulty">
+    <option value="easy">Easy</option>
+    <option value="medium">Medium</option>
+    <option value="hard">Hard</option>
+  </select>
 
-  <button onclick="checkAnswer()">Submit</button>
+  <div class="question-box">
+    <h2 id="question">Loading...</h2>
+  </div>
+
+  <input
+    type="number"
+    id="answer"
+    placeholder="Enter your answer"
+  >
+
+  <button onclick="checkAnswer()">
+    Submit Answer
+  </button>
+
+  <button class="next" onclick="newQuestion()">
+    Next Question
+  </button>
 
   <p id="feedback"></p>
 
-  <p>Score: <span id="score">0</span></p>
+  <div class="score-box">
+    Score: <span id="score">0</span>
+  </div>
 
-  <script>
-    let score = 0;
+</div>
 
-    function checkAnswer() {
-      let answer = Number(
-        document.getElementById("answer").value
-      );
+<script>
 
-      let feedback =
-        document.getElementById("feedback");
+let a, b;
+let score = 0;
+let operation = "+";
+let answered = false;
 
-      if (answer === 8) {
-        feedback.textContent = "Correct! Well done.";
-        score++;
-      } else {
-        feedback.textContent = "Try again!";
-      }
+function newQuestion() {
 
-      document.getElementById("score").textContent = score;
-    }
-  </script>
+  const level =
+    document.getElementById("difficulty").value;
+
+  const max =
+    level === "easy" ? 10 :
+    level === "medium" ? 50 : 100;
+
+  a = Math.floor(Math.random() * max) + 1;
+  b = Math.floor(Math.random() * max) + 1;
+
+  operation =
+    Math.random() < 0.5 ? "+" : "-";
+
+  if (operation === "-" && b > a) {
+    [a, b] = [b, a];
+  }
+
+  document.getElementById("question").textContent =
+    `${a} ${operation} ${b} = ?`;
+
+  document.getElementById("answer").value = "";
+
+  document.getElementById("feedback").textContent = "";
+
+  answered = false;
+}
+
+function checkAnswer() {
+
+  if (answered) return;
+
+  const input =
+    document.getElementById("answer").value;
+
+  const feedback =
+    document.getElementById("feedback");
+
+  if (input.trim() === "") {
+    feedback.textContent =
+      "Please enter an answer first!";
+    return;
+  }
+
+  const correctAnswer =
+    operation === "+" ? a + b : a - b;
+
+  if (Number(input) === correctAnswer) {
+
+    score++;
+
+    feedback.textContent =
+      "Correct! Excellent work 🎉";
+
+  } else {
+
+    feedback.textContent =
+      `Incorrect! The answer is ${correctAnswer}.`;
+
+  }
+
+  document.getElementById("score").textContent =
+    score;
+
+  answered = true;
+}
+
+document.getElementById("difficulty")
+  .addEventListener("change", newQuestion);
+
+newQuestion();
+
+</script>
 
 </body>
 </html>
