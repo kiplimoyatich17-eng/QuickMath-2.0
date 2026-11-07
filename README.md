@@ -9,7 +9,7 @@ QuickMath is a lightweight, interactive arithmetic quiz application built with H
 
 [Play QuickMath](https://YOUR-USERNAME.github.io/QuickMath-2.0/)
 
-Replace `YOUR-USERNAME` with your actual GitHub username.
+Replace `kiplimoyatich17-eng` with your actual GitHub username.
 
 ## ✨ Features
 
