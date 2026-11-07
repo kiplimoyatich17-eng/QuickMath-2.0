@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuickMath 2.0</title>
+</head>
+
+<body>
+
+  <h1>QuickMath 2.0 🧠</h1>
+
+  <p>Welcome to your mathematics challenge!</p>
+
+  <h2 id="question">5 + 3 = ?</h2>
+
+  <input type="number" id="answer"
+         placeholder="Enter your answer">
+
+  <button onclick="checkAnswer()">Submit</button>
+
+  <p id="feedback"></p>
+
+  <p>Score: <span id="score">0</span></p>
+
+  <script>
+    let score = 0;
+
+    function checkAnswer() {
+      let answer = Number(
+        document.getElementById("answer").value
+      );
+
+      let feedback =
+        document.getElementById("feedback");
+
+      if (answer === 8) {
+        feedback.textContent = "Correct! Well done.";
+        score++;
+      } else {
+        feedback.textContent = "Try again!";
+      }
+
+      document.getElementById("score").textContent = score;
+    }
+  </script>
+
+</body>
+</html>
