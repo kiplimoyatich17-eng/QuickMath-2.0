@@ -303,15 +303,19 @@ function generateQuestion() {
   answerEl.focus();
 }
 
+
 function updateStats() {
   $("score").textContent = score;
   $("streak").textContent = streak;
 
-  const accuracy = attempted === 0
+  const accuracy = totalAttempts === 0
     ? 0
-    : Math.round(correct / attempted * 100);
+    : Math.round((totalCorrect / totalAttempts) * 100);
 
   $("accuracy").textContent = accuracy + "%";
+}
+
+ 
 }
 
 function saveProgress() {
