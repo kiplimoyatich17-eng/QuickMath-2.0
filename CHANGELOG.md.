@@ -1,0 +1,26 @@
+
+# QuickMath - Changelog
+
+All notable changes to QuickMath are documented here.
+
+## [2.2.0] - 2026-11-08
+
+### Fixed
+- Corrected an extra closing brace in JavaScript.
+- Restored normal JavaScript execution.
+- Fixed answer submission functionality.
+
+### Verified
+- Correct answers update the score.
+- Incorrect answers reveal the correct answer.
+- Incorrect answers reset the streak.
+- Personal best survives page refresh.
+
+### Quality Assurance
+- Initial functionality tests: 6/6 passed.
+- Post-fix regression tests: 3/3 passed.
+
+### Project Status
+- Application deployed on GitHub Pages.
+- Bug fix committed to the main branch.
+- Core answer submission functionality verified.
