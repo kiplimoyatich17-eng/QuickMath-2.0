@@ -304,6 +304,7 @@ function generateQuestion() {
 }
 
 
+
 function updateStats() {
   $("score").textContent = score;
   $("streak").textContent = streak;
@@ -313,7 +314,7 @@ function updateStats() {
     : Math.round((totalCorrect / totalAttempts) * 100);
 
   $("accuracy").textContent = accuracy + "%";
-
+}
 
 function saveProgress() {
   localStorage.setItem("qmAttempts", totalAttempts);
